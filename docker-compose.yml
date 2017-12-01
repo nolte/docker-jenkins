@@ -1,0 +1,19 @@
+version: '3'
+services:
+  #docker-compose -f docker-compose-servers.yml up messagebus
+  # https://github.com/openfrontier/docker-jenkins/
+  jenkins:
+    build: .
+    environment:
+      - "ACTIVEMQ_CONFIG_MINMEMORY=256"
+      - "JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
+    volumes:
+      -  /var/run/docker.sock:/var/run/docker.sock
+      - jenkinshome:/var/jenkins_home
+    ports:
+        - "8080:8080"
+
+
+# docker volume rm buildenv_jenkinshome
+volumes:
+  jenkinshome:
