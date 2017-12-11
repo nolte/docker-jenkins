@@ -1,6 +1,7 @@
 ace-editor:latest
 antisamy-markup-formatter:latest
 build-monitor-plugin:latest
+build-keeper-plugin:latest
 credentials:latest
 cloudbees-folder:latest
 docker-build-publish:latest
