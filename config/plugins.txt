@@ -9,6 +9,7 @@ docker-plugin:latest
 docker-workflow:latest
 parameterized-trigger:latest
 pipeline-maven:latest
+rocketchatnotifier:latest
 maven-plugin:latest
 nested-view:latest
 ssh-agent:latest
