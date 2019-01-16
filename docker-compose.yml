@@ -5,7 +5,6 @@ services:
   jenkins:
     build: .
     environment:
-      - "ACTIVEMQ_CONFIG_MINMEMORY=256"
       - "JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
     volumes:
       -  /var/run/docker.sock:/var/run/docker.sock
