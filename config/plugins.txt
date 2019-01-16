@@ -32,6 +32,6 @@ workflow-job:latest
 workflow-multibranch:latest
 workflow-scm-step:latest
 workflow-step-api:latest
-workflow-support:latest
+workflow-support:3.0
 pyenv-pipeline:latest
 shiningpanda:latest

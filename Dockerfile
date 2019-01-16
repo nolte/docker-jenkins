@@ -4,7 +4,7 @@ USER root
 
 # install common system modules
 RUN apt-get update -q && \
-    apt-get install -q -y curl git git-flow \
+    apt-get install -q -y curl git git-flow jq\
     apt-transport-https ca-certificates curl gnupg2 software-properties-common
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
@@ -14,9 +14,12 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
 
 RUN apt-get update -q && \
     apt-get install -q -y \
-    python2.7 python2.7-dev libpython2.7-dev \
-    python3 python3-dev libpython3-dev \
+    python2.7 python2.7-dev python-pip libpython2.7-dev libssl-dev \
+    python3 python3-dev python3-pip libpython3-dev \
     virtualenv
+
+RUN pip install --upgrade pip==18.1
+RUN pip3 install --upgrade pip==18.1
 
 # install cloud tools
 ENV KUBECTL_BASE=/opt/kubectl
@@ -24,12 +27,11 @@ ENV KUBECTL_VERSION=v1.13.0
 ENV KUBECTL_CLIENT_PATH=${KUBECTL_BASE}/${KUBECTL_VERSION}
 
 RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
-    wget https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
+    wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
     chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
 
 
-ENV OC_BASE /opt/openshift-origin-client-tools
-
+ENV OC_BASE=/opt/openshift-origin-client-tools
 ENV OC_CLIENT_VERSION=v3.11.0
 ENV OC_CLIENT_VERSION_GH_REF=0cbc58b
 ENV OC_CLIENT_PATH=${OC_BASE}/${OC_CLIENT_VERSION}
@@ -45,9 +47,18 @@ ENV KUSTOMIZE_BASE=/opt/kustomize
 ENV KUSTOMIZE_VERSION=1.0.11
 ENV KUSTOMIZE_PATH=${KUSTOMIZE_BASE}/v${KUSTOMIZE_VERSION}
 
-RUN mkdir -p $KUSTOMIZE_PATH && \
+RUN mkdir -p ${KUSTOMIZE_PATH} && \
     wget -q "https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64" -O ${KUSTOMIZE_PATH}/kustomize && \
-    chmod u+x $KUSTOMIZE_PATH/kustomize
+    chmod u+x ${KUSTOMIZE_PATH}/kustomize
+
+ENV TERRAFORM_BASE=/opt/terraform
+ENV TERRAFORM_VERSION=0.11.11
+ENV TERRAFORM_PATH=${TERRAFORM_BASE}/v${TERRAFORM_VERSION}
+RUN mkdir -p $TERRAFORM_PATH && \
+    wget -q "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -O ${TERRAFORM_PATH}/terraform.zip && \
+    unzip -d ${TERRAFORM_PATH} ${TERRAFORM_PATH}/terraform.zip && \
+    chmod u+x ${TERRAFORM_PATH}/terraform && \
+    rm ${TERRAFORM_PATH}/terraform.zip
 
 USER jenkins
 
