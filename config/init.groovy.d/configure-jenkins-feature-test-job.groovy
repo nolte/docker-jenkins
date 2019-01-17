@@ -61,6 +61,23 @@ pipeline {
                         sh "/opt/terraform/v0.11.11/terraform version"
                     }
                 }
+                stage('check System-CPython-3') {
+                    agent any
+                    steps {
+                      withPythonEnv('System-CPython-3'){
+                        sh "python --version"
+                      }
+                    }
+                }
+                stage('check CPython-2') {
+                    agent any
+                    steps {
+                      withPythonEnv('System-CPython-2.7'){
+                        sh "python --version"
+                      }
+                    }
+                }
+
             }
         }
     }
