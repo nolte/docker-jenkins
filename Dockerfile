@@ -21,63 +21,42 @@ RUN apt-get update -q && \
 RUN pip install --upgrade pip==18.1
 RUN pip3 install --upgrade pip==18.1
 
+
+
 # install cloud tools
-ENV KUBECTL_BASE=/opt/kubectl
-ENV KUBECTL_VERSION=v1.13.0
-ENV KUBECTL_CLIENT_PATH=${KUBECTL_BASE}/${KUBECTL_VERSION}
+ARG KUBECTL_BASE=/opt/kubectl
 
-RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
-    wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
-    chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
+COPY scripts/install_kubectl.sh scripts/install_kubectl.sh
+RUN chmod u+x scripts/install_kubectl.sh
+RUN scripts/install_kubectl.sh ${KUBECTL_BASE} v1.13.0
+RUN scripts/install_kubectl.sh ${KUBECTL_BASE} v1.6.1
+RUN scripts/install_kubectl.sh ${KUBECTL_BASE} v1.4.0
 
-ENV KUBECTL_VERSION=v1.6.1
-RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
-    wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
-    chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
+RUN ls -all /opt/kubectl
 
-ENV KUBECTL_VERSION=v1.4.0
-RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
-    wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
-    chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
+ARG OC_BASE=/opt/openshift-origin-client-tools
 
-ENV OC_BASE=/opt/openshift-origin-client-tools
-ENV OC_CLIENT_VERSION=v3.11.0
-ENV OC_CLIENT_VERSION_GH_REF=0cbc58b
-ENV OC_CLIENT_PATH=${OC_BASE}/${OC_CLIENT_VERSION}
+COPY scripts/install_oc.sh scripts/install_oc.sh
+RUN chmod u+x scripts/install_oc.sh
+RUN scripts/install_oc.sh ${OC_BASE} v3.11.0 0cbc58b
+RUN scripts/install_oc.sh ${OC_BASE} v3.6.0 c4dd4cf
 
-RUN mkdir -p ${OC_CLIENT_PATH} && \
-    wget -q https://github.com/openshift/origin/releases/download/${OC_CLIENT_VERSION}/openshift-origin-client-tools-${OC_CLIENT_VERSION}-${OC_CLIENT_VERSION_GH_REF}-linux-64bit.tar.gz -O ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
-    tar --strip-components=1 -xzf ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz -C ${OC_CLIENT_PATH} && \
-    rm ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
-    chmod +x ${OC_CLIENT_PATH}/kubectl && \
-    chmod +x ${OC_CLIENT_PATH}/oc
+RUN ls -all ${OC_BASE}
 
-ENV OC_CLIENT_VERSION=v3.6.0
-ENV OC_CLIENT_VERSION_GH_REF=c4dd4cf
+ARG KUSTOMIZE_BASE=/opt/kustomize
+COPY scripts/install_kustomize.sh scripts/install_kustomize.sh
+RUN chmod u+x scripts/install_kustomize.sh
+RUN scripts/install_kustomize.sh ${KUSTOMIZE_BASE} 1.0.11
 
-RUN mkdir -p ${OC_CLIENT_PATH} && \
-    wget -q https://github.com/openshift/origin/releases/download/${OC_CLIENT_VERSION}/openshift-origin-client-tools-${OC_CLIENT_VERSION}-${OC_CLIENT_VERSION_GH_REF}-linux-64bit.tar.gz -O ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
-    tar --strip-components=1 -xzf ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz -C ${OC_CLIENT_PATH} && \
-    rm ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
-    chmod +x ${OC_CLIENT_PATH}/oc
+ARG TERRAFORM_BASE=/opt/terraform
+COPY scripts/install_terraform.sh scripts/install_terraform.sh
+RUN chmod u+x scripts/install_terraform.sh
+RUN scripts/install_terraform.sh ${TERRAFORM_BASE} 0.11.11
 
-
-ENV KUSTOMIZE_BASE=/opt/kustomize
-ENV KUSTOMIZE_VERSION=1.0.11
-ENV KUSTOMIZE_PATH=${KUSTOMIZE_BASE}/v${KUSTOMIZE_VERSION}
-
-RUN mkdir -p ${KUSTOMIZE_PATH} && \
-    wget -q "https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64" -O ${KUSTOMIZE_PATH}/kustomize && \
-    chmod u+x ${KUSTOMIZE_PATH}/kustomize
-
-ENV TERRAFORM_BASE=/opt/terraform
-ENV TERRAFORM_VERSION=0.11.11
-ENV TERRAFORM_PATH=${TERRAFORM_BASE}/v${TERRAFORM_VERSION}
-RUN mkdir -p $TERRAFORM_PATH && \
-    wget -q "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -O ${TERRAFORM_PATH}/terraform.zip && \
-    unzip -d ${TERRAFORM_PATH} ${TERRAFORM_PATH}/terraform.zip && \
-    chmod u+x ${TERRAFORM_PATH}/terraform && \
-    rm ${TERRAFORM_PATH}/terraform.zip
+RUN chown -R jenkins:jenkins ${KUBECTL_BASE}
+RUN chown -R jenkins:jenkins ${KUSTOMIZE_BASE}
+RUN chown -R jenkins:jenkins ${OC_BASE}
+RUN chown -R jenkins:jenkins ${TERRAFORM_BASE}
 
 USER jenkins
 
