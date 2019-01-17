@@ -30,6 +30,15 @@ RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
     wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
     chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
 
+ENV KUBECTL_VERSION=v1.6.1
+RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
+    wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
+    chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
+
+ENV KUBECTL_VERSION=v1.4.0
+RUN mkdir -p ${KUBECTL_CLIENT_PATH} && \
+    wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -O ${KUBECTL_CLIENT_PATH}/kubectl && \
+    chmod +x ${KUBECTL_CLIENT_PATH}/kubectl
 
 ENV OC_BASE=/opt/openshift-origin-client-tools
 ENV OC_CLIENT_VERSION=v3.11.0
@@ -42,6 +51,16 @@ RUN mkdir -p ${OC_CLIENT_PATH} && \
     rm ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
     chmod +x ${OC_CLIENT_PATH}/kubectl && \
     chmod +x ${OC_CLIENT_PATH}/oc
+
+ENV OC_CLIENT_VERSION=v3.6.0
+ENV OC_CLIENT_VERSION_GH_REF=c4dd4cf
+
+RUN mkdir -p ${OC_CLIENT_PATH} && \
+    wget -q https://github.com/openshift/origin/releases/download/${OC_CLIENT_VERSION}/openshift-origin-client-tools-${OC_CLIENT_VERSION}-${OC_CLIENT_VERSION_GH_REF}-linux-64bit.tar.gz -O ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
+    tar --strip-components=1 -xzf ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz -C ${OC_CLIENT_PATH} && \
+    rm ${OC_CLIENT_PATH}/openshift-origin-client-tools.tar.gz && \
+    chmod +x ${OC_CLIENT_PATH}/oc
+
 
 ENV KUSTOMIZE_BASE=/opt/kustomize
 ENV KUSTOMIZE_VERSION=1.0.11
