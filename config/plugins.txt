@@ -13,10 +13,14 @@ git-parameter:latest
 git:latest
 job-dsl:latest
 maven-plugin:latest
+metrics:latest
 nested-view:latest
 parameterized-trigger:latest
 pipeline-maven:latest
+prometheus:latest
+pyenv-pipeline:latest
 rocketchatnotifier:latest
+shiningpanda:latest
 simple-theme-plugin:latest
 ssh-agent:latest
 ssh-credentials:latest
@@ -34,5 +38,3 @@ workflow-scm-step:latest
 workflow-step-api:latest
 workflow-support:3.0
 ws-cleanup:latest
-pyenv-pipeline:latest
-shiningpanda:latest
