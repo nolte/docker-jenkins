@@ -5,7 +5,7 @@ USER root
 # install common system modules
 RUN apt-get update -q && \
     apt-get install -q -y curl git git-flow jq\
-    apt-transport-https ca-certificates curl gnupg2 software-properties-common
+    apt-transport-https ca-certificates curl gnupg2 software-properties-common libnss3-tools
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
