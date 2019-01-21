@@ -38,3 +38,4 @@ workflow-scm-step:latest
 workflow-step-api:latest
 workflow-support:3.0
 ws-cleanup:latest
+http_request:latest
