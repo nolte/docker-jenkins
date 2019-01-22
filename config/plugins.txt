@@ -40,3 +40,4 @@ workflow-support:3.0
 ws-cleanup:latest
 http_request:latest
 openid:latest
+oic-auth:latest
